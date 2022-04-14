@@ -1,19 +1,39 @@
+
 ;; Custom Emacs init file
 ;; Author: Carlos Rivera
 
 ;; Custom Lisp Path
-(add-to-list 'load-path "~/.emacs.d/lisp/")
+(add-to-list 'load-path "~/.emacs.d/lisp")
 
-;; Go-Mode Plugin
-(autoload 'go-mode "go-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+;; God Mode (minor mode for modal editing)
+(require 'god-mode)
+(god-mode)
 
-;; Xah-Fly-Keys Plugin
-(require 'xah-fly-keys)
-(xah-fly-keys-set-layout "qwerty")
-;; (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
-;; (global-set-key (kbd "`") 'xah-fly-command-mode-activate)
-(xah-fly-keys 1 )
+(global-set-key (kbd "<escape>") #'god-mode-enable)
+(define-key god-local-mode-map (kbd "i") #'god-local-mode)
+(define-key god-local-mode-map (kbd ".") #'repeat)
+
+(global-set-key (kbd "C-x C-1") #'delete-other-windows)
+(global-set-key (kbd "C-x C-2") #'split-window-below)
+(global-set-key (kbd "C-x C-3") #'split-window-right)
+(global-set-key (kbd "C-x C-0") #'delete-window)
+(global-set-key (kbd "C-x C-o") #'other-window)
+
+(global-set-key (kbd "C-x C-b") #'switch-to-buffer)
+(global-set-key (kbd "M-b") #'switch-to-buffer-other-window)
+(global-set-key (kbd "M-f") #'find-file-other-window)
+
+(global-set-key (kbd "C-x C-k") #'kill-buffer)
+
+(define-key god-local-mode-map (kbd "[") #'backward-paragraph)
+(define-key god-local-mode-map (kbd "]") #'forward-paragraph)
+
+(setq god-exempt-major-modes nil)
+(setq god-exempt-predicates nil)
+
+(require 'god-mode-isearch)
+(define-key isearch-mode-map (kbd "<escape>") #'god-mode-isearch-activate)
+(define-key god-mode-isearch-map (kbd "<escape>") #'god-mode-isearch-disable)
 
 ;; Default variables
 (setq-default tab-width 4)
@@ -45,15 +65,15 @@
 ;; Turn off emacs GUI options
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(toggle-scroll-bar -1)
+;; (toggle-scroll-bar 1)
 
 ;; Colors and font configuration
 (if (display-graphic-p)
-    ;; Window GUI mode
+    ;; Windowed GUI mode
     (progn
       (global-font-lock-mode 1)
       (custom-set-faces
-	'(default ((t (:foreground "#d1b897" :background "#051b26" :font "Consolas" :height 140))))
+	'(default ((t (:foreground "#d1b897" :background "#051b26" :font "Consolas" :height 165))))
 	'(region ((t (:foreground nil :background "midnight blue"))))
 	'(cursor ((t (:background "#30ff30"))))
 	'(mode-line ((t (:inverse-video t))))
@@ -138,18 +158,10 @@
     (c-echo-syntactic-information-p . t))
   "My C Style")
 
-(defun my-go-hook()
-  (setq tab-width 4
-	indent-tabs-mode t
-	truncate-lines nil))
-
-(add-hook 'go-mode-hook 'my-go-hook)
-
 (defun my-c-hook()
   (c-add-style "My Style" my-c-style t)
  
-  (setq tab-width 4
-        indent-tabs-mode nil
+  (setq indent-tabs-mode nil
         truncate-lines nil)
   
   (c-set-offset 'comment-intro 0)
@@ -157,10 +169,8 @@
 
 (add-hook 'c-mode-common-hook 'my-c-hook)
 
-;; (define-key global-map "\e/" 'dabbrev-expand)
-
 ;; Maximize screen
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
