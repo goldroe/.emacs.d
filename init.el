@@ -8,9 +8,29 @@
 (require 'glsl-mode)
 (require 'compile)
 
+(require 'ctags-update)
+(ctags-global-auto-update-mode)
+(setq ctags-update-prompt-create-tags nil);
+;; (autoload 'turn-on-ctags-auto-update-mode "ctags-update" "turn on `ctags-auto-update-mode'." t)
+(add-hook 'c-mode-common-hook  'turn-on-ctags-auto-update-mode)
+(autoload 'ctags-update "ctags-update" "update TAGS using ctags" t)
+(global-set-key "\C-cE" 'ctags-update)
+(when (equal system-type 'windows-nt)
+  (setq ctags-update-command (expand-file-name  "~/.emacs.d/bin/ctags.exe")))
+
+(defun split-or-unsplit-toggle ()
+  "Either splits vertically or unsplits if already split"
+  (interactive)
+  (if (> (count-windows) 1)
+      (delete-other-windows)
+    (split-window-right)))
+
+(global-set-key "\ep" 'split-or-unsplit-toggle)
 (global-set-key (kbd "C-<return>") 'save-buffer)
 (global-set-key (kbd "C-,") 'other-window)
 (global-set-key (kbd "<f11>") 'toggle-frame-fullscreen)
+
+(global-set-key "\er" 'query-replace)
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
@@ -45,6 +65,8 @@
 
 (abbrev-mode 1)
 
+(setq-default frame-title-format "emacs")
+
 ;; emacs GUI options
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -59,10 +81,11 @@
     (progn
       ;; Windowed mode
       (custom-set-faces
-       '(default ((t (:foreground "#d1b897" :background "#051b26" :font "Liberation Mono" :height 140))))
+       '(default ((t (:foreground "#d1b897" :background "#051b26" :font "Consolas" :height 140))))
        '(region ((t (:foreground nil :background "midnight blue"))))
        '(cursor ((t (:background "#30ff30"))))
        '(mode-line ((t (:foreground "black" :background "gainsboro" :font "Comic Mono" :height 135))))
+       '(minibuffer-prompt ((t (:foreground "cyan" :font "Comic Mono" :height 135))))
        '(fringe ((t (:foreground "cyan" :background "#051b26"))))
        '(linum ((t (:foreground "#051d1e" :background "#051b26"))))
        '(window-divider ((t (:foreground "gainsboro"))))
@@ -222,10 +245,10 @@
   (other-window 1))
 (define-key global-map "\em" 'make-without-asking)
 
+;; Transparency just in case I need to see stuff on the background
+;; (set-frame-parameter (selected-frame) 'alpha '(94 50))
+;; (add-to-list 'default-frame-alist '(alpha 94 50))
+
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(inhibit-startup-screen t)
  '(ring-bell-function 'ignore))
