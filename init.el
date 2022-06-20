@@ -81,7 +81,7 @@
     (progn
       ;; Windowed mode
       (custom-set-faces
-       '(default ((t (:foreground "#d1b897" :background "#051b26" :font "Consolas" :height 140))))
+       '(default ((t (:foreground "#d1b897" :background "#051b26" :font "Bitstream Vera Sans Mono" :height 130))))
        '(region ((t (:foreground nil :background "midnight blue"))))
        '(cursor ((t (:background "#30ff30"))))
        '(mode-line ((t (:foreground "black" :background "gainsboro" :font "Comic Mono" :height 135))))
